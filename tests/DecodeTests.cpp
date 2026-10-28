@@ -67,10 +67,10 @@ static void CheckDecode(U32 sampleRate, int slots, double mab, double minimumMab
         }
         tx.Hold(BIT_HIGH, .000020);
     }
-    // Finish the last packet and give the decoder a complete following BREAK/MAB.
+    // Finish with a following BREAK. No falling start edge: the mock has no
+    // end-of-capture sample limit and would decode a partial byte as all zeros.
     tx.Hold(BIT_LOW, .000100);
     tx.Hold(BIT_HIGH, mab);
-    tx.Hold(BIT_LOW, 1.0 / DMX_BIT_RATE);
     data.ResetCurrentSample();
     instance.SetChannelData(channel, &data);
     Require(instance.RunAnalyzerWorker() == AnalyzerTest::Instance::WorkerRanOutOfData,
