@@ -1,0 +1,39 @@
+name: Build and verify analyzers
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  decoder-tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
+      - name: Build
+        run: cmake --build build --parallel 2
+      - name: Decode all six rates
+        run: ctest --test-dir build --output-on-failure
+  windows-release:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure x64
+        run: cmake -S . -B build -A x64 -DBUILD_TESTING=OFF
+      - name: Build Release
+        run: cmake --build build --config Release --parallel 2
+      - name: Check dependencies and plugin entry points
+        run: python tools/verify_windows.py build/Analyzers/Release build/_deps/analyzersdk-src/lib_x86_64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dmx-analyzers-windows-x64-release
+          if-no-files-found: error
+          path: |
+            build/Analyzers/Release/dmx_512_analyzer_*.dll
+            README.md
+            LICENSE
