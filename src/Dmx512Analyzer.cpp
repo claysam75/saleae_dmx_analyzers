@@ -46,7 +46,7 @@ void Dmx512Analyzer::WorkerThread()
 
         // BREAK delimits the packet. Do not impose a 512-slot/universe limit.
         U64 next_edge = mSerial->GetSampleOfNextEdge(); // LH
-        for( int count = 1; next_edge - cursor < mSampleRateHz * .000088; ++count )
+        for( U64 count = 1; next_edge - cursor < mSampleRateHz * .000088; ++count )
         {
             cursor = ReadSlot( cursor, DATA, count );
             next_edge = mSerial->GetSampleOfNextEdge(); // LH
@@ -62,7 +62,7 @@ void Dmx512Analyzer::WorkerThread()
 /* type: DATA or START_CODE */
 /* count: if DATA, which slot in the packet we are reading */
 /* returns: current GetSampleNumber() */
-U64 Dmx512Analyzer::ReadSlot( U64 start, U8 type, int count )
+U64 Dmx512Analyzer::ReadSlot( U64 start, U8 type, U64 count )
 {
     U64 cursor;
     // 1b low, 8b data, 2b high

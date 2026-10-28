@@ -54,7 +54,7 @@ class Dmx512Analyzer : public Analyzer2
 
     U64 ReadMAB( U64 start );
     U64 ReadByte( U64 start, U8 type, U64 data1 );
-    U64 ReadSlot( U64 start, U8 type, int count );
+    U64 ReadSlot( U64 start, U8 type, U64 count );
 
     void PassFrame( U64 data, U8 type, U8 flag, U64 start, U64 end, U8 ); // helper
                                                                           // Would make more sense to re-order the parameters

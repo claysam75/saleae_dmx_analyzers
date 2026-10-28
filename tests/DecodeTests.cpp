@@ -90,6 +90,15 @@ static void CheckDecode(U32 sampleRate, int slots, double mab, double minimumMab
             ++slot;
             Require(frame.mData1 == static_cast<U64>(slot), "wrong slot index");
             Require(frame.mData2 == Payload(packet, slot), "wrong decoded byte");
+            if(slot == slots) {
+                instance.GenerateBubbleText(i, channel, Decimal);
+                Require(results->TotalStringCount() > 0, "missing slot label");
+                const std::string expected = "Slot " + std::to_string(slot) + ":";
+                Require(results->GetString(0).find(expected) == 0, "slot label was truncated");
+                instance.GenerateTabularText(i, Decimal);
+                Require(results->TotalTabularTextCount() > 0, "missing slot table row");
+                Require(results->GetTabularText(0).find(expected) == 0, "slot table number was truncated");
+            }
         } else if(frame.mType == Dmx512Analyzer::STOP) {
             Require(!(frame.mFlags & DISPLAY_AS_ERROR_FLAG), "bad stop bits");
         }
@@ -122,8 +131,8 @@ static void CheckSimulation()
 int main()
 {
     try {
-        CheckDecode(60000000, 512 * (DMX_BIT_RATE / 250000), .000012, .000008, false);
-        CheckDecode(48000000, 64, .000012, .000008, false);
+        CheckDecode(60000000, 4096, .000012, .000008, false);
+        CheckDecode(48000000, 1024, .000012, .000008, false);
         CheckDecode(60000000, 4, .000004, .000008, true);
         CheckDecode(60000000, 4, .000004, .000004, false);
         CheckSimulation();

@@ -66,8 +66,8 @@ entry points against the pinned Saleae SDK.
 
 On Linux, decoder tests run the actual C++ decoder with Saleae's test harness
 against independently generated waveforms. They cover two consecutive packets,
-512 to 3,072 slots depending on baud rate, contiguous slots and inter-slot marks,
-every decoded byte and slot number, fractional samples per bit, 4 us/8 us MAB
+4,096 slots at every baud rate, contiguous slots and inter-slot marks,
+every decoded byte and slot number, 1,024 slots with fractional samples per bit, 4 us/8 us MAB
 validation, and fixed simulator BREAK/MAB durations. Timeouts catch decoder hangs.
 
 These checks do not replace final validation in Logic 2 with a real capture.
